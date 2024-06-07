@@ -1,7 +1,6 @@
 class LoginForm {
   constructor (container) {
     
-
     this.form = document.createElement('form')
     this.heading = document.createElement('h1')
     this.heading.textContent = 'Student Login'
