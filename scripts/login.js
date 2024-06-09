@@ -1,6 +1,6 @@
 class LoginForm {
-  constructor (container) {
-    
+  constructor (container, flash) {
+    this.flash = flash
     this.form = document.createElement('form')
     this.heading = document.createElement('h1')
     this.heading.textContent = 'Student Login'
@@ -27,15 +27,44 @@ class LoginForm {
     })
   }
 
-  #login (regNo, password) {
+  async #login (regNo, password) {
     if (!regNo || !password) {
       //Display error in a flash message
+      return this.flash.showFlashMessage('All field are required')
     }
 
     try {
       //Send the data to server
-    } catch (error) {
+      const response = await fetch(
+        'http://localhost:5600/api/v1/student/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            registration_number: regNo,
+            password: password
+          })
+        }
+      )
+
+      if (!response.ok)
+      {
+        throw new Error(response.statusText)
+      }
+
+      const result = await response.json()
+      console.log(result)
+
+
+      this.flash.flashContainer.style.backgroundColor = '#4caf50'
+      return this.flash.showFlashMessage('Login successfull')
+    } catch (error)
+    {
+
       //Display error in a flash message
+      return this.flash.showFlashMessage(error.message)
     }
   }
 }
